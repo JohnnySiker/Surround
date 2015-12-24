@@ -10,7 +10,7 @@ import UIKit
 import CoreBluetooth
 import AVFoundation
 
-enum whatTable {
+enum tableToDisplay {
     case Peripherals,Services,Characteristics
     func description()->String {
         switch self {
@@ -24,45 +24,41 @@ enum whatTable {
     }
 }
 
-class TableViewDelegate : NSObject, UITableViewDelegate {
-    //TODO: Put table view delegate here
+struct peripheralAttributes {
+    var peripheral:CBPeripheral!
+    var services:[CBService] = []
+    var characteristic:[CBCharacteristic] = []
+    var preferService: CBService!
+    var preferCharacteristic: CBCharacteristic!
 }
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,CBCentralManagerDelegate,CBPeripheralDelegate {
+
+class TableViewDelegate : NSObject, UITableViewDelegate {
     
-    @IBOutlet weak var tb: UITableView!
-    
-    var clients:[CBPeripheral] = []
-    var services:[CBService] = []
-    var characteristics:[CBCharacteristic] = []
-    
-    
-    var myCentralManager:CBCentralManager!
-    var peripheralConnected:CBPeripheral!
-    var serviceSelected:CBService!
-    var characteristicSelected:CBCharacteristic!
-    
-    var wt:whatTable = whatTable.Peripherals
-    
-    var player:AVAudioPlayer!
-    
-    var chunk:[NSData] = []
-    var didSent = false
-    var archivo:NSData!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tb.delegate = self
-        tb.dataSource = self
-       
-        myCentralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
-        
-        
-        
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        switch wt {
+        case .Peripherals:
+            myCentralManager.connectPeripheral(clients[indexPath.row], options: [CBConnectPeripheralOptionNotifyOnConnectionKey:true])
+            
+            break
+        case .Services:
+            serviceSelected = services[indexPath.row]
+            peripheralConnected.discoverCharacteristics(nil, forService: serviceSelected)
+            break
+        case .Characteristics:
+            print("Selecciono una caracteristica")
+            characteristicSelected = characteristics[indexPath.row]
+            peripheralConnected.readValueForCharacteristic(characteristicSelected)
+            peripheralConnected.setNotifyValue(true, forCharacteristic: characteristicSelected)
+            break
+        }
+
     }
     
-    
+}
+
+
+class TableViewDataSource: NSObject, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch wt {
         case .Peripherals:
@@ -72,10 +68,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         case .Characteristics:
             return characteristics.count
         }
-        
-        
-        
-        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -97,8 +89,45 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         return cell!
         
     }
-    
 
+}
+
+
+
+class ViewController: UIViewController,CBCentralManagerDelegate,CBPeripheralDelegate {
+    
+    @IBOutlet weak var tb: UITableView!
+    
+    var clients:[CBPeripheral] = []
+    var services:[CBService] = []
+    var characteristics:[CBCharacteristic] = []
+    
+    
+    var myCentralManager:CBCentralManager!
+    var peripheralConnected:CBPeripheral!
+    var serviceSelected:CBService!
+    var characteristicSelected:CBCharacteristic!
+    
+    var wt:tableToDisplay = tableToDisplay.Peripherals
+    
+    var player:AVAudioPlayer!
+    
+    var chunk:[NSData] = []
+    var didSent = false
+    var archivo:NSData!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tb.delegate = TableViewDelegate()
+        tb.dataSource = TableViewDataSource()
+       
+        myCentralManager = CBCentralManager(delegate: self, queue: nil, options: nil)
+        
+        
+        
+    }
+    
     
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
         
@@ -136,28 +165,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-            //myCentralManager.connectPeripheral(clients[indexPath.row], options:)
-        
-        switch wt {
-        case .Peripherals:
-            myCentralManager.connectPeripheral(clients[indexPath.row], options: [CBConnectPeripheralOptionNotifyOnConnectionKey:true])
-            
-            break
-        case .Services:
-            serviceSelected = services[indexPath.row]
-            peripheralConnected.discoverCharacteristics(nil, forService: serviceSelected)
-            break
-        case .Characteristics:
-            print("Selecciono una caracteristica")
-            characteristicSelected = characteristics[indexPath.row]
-            peripheralConnected.readValueForCharacteristic(characteristicSelected)
-            peripheralConnected.setNotifyValue(true, forCharacteristic: characteristicSelected)
-            break
-        }
-        
-    }
     
     
     func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
@@ -188,7 +195,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
         if error == nil {
-            wt = whatTable.Services
+            wt = .Services
             services = []
             services = peripheral.services!
             tb.reloadData()
@@ -201,7 +208,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
         if error == nil {
             characteristics = service.characteristics!
-            wt = whatTable.Characteristics
+            wt = .Characteristics
             tb.reloadData()
         }else{
             print("Error al obtener las caracteristicas del servicio")
