@@ -24,6 +24,9 @@ enum whatTable {
     }
 }
 
+class TableViewDelegate : NSObject, UITableViewDelegate {
+    //TODO: Put table view delegate here
+}
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,CBCentralManagerDelegate,CBPeripheralDelegate {
     
