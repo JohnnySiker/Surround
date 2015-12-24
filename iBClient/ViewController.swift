@@ -43,7 +43,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var player:AVAudioPlayer!
     
-    
+    var chunk:[NSData] = []
+    var didSent = false
+    var archivo:NSData!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,7 +114,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         case .PoweredOn:
             print("Estado del central manager: .PoweredOn")
             myCentralManager.scanForPeripheralsWithServices(nil, options: nil)
-            
             break
         case .PoweredOff:
             print("Estado del central manager: .PoweredOff")
@@ -161,6 +162,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.peripheralConnected = peripheral
         self.peripheralConnected.delegate = self
         self.peripheralConnected.discoverServices(nil)
+        self.myCentralManager.stopScan()
     }
     
     func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
@@ -206,8 +208,30 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
         if error == nil {
+            
             let data  = characteristic.value!
-            print(NSString(data: data, encoding: NSUTF8StringEncoding)!)
+            
+            if (NSString(data: data, encoding: NSUTF8StringEncoding)! == "EOF") {
+             didSent = false
+                print("Se recibio paquete")
+                archivo = chunkToData(chunk)
+                print(NSString(data: archivo, encoding: NSUTF8StringEncoding))
+                //reproducir()
+            }
+            
+            
+            if didSent {
+                chunk.append(data)
+            }
+            
+            if (NSString(data: data, encoding: NSUTF8StringEncoding)! == "EOM") {
+                print("Comenzando a recibir")
+                didSent = true
+            }
+            
+            if !didSent {
+                print(NSString(data: data, encoding: NSUTF8StringEncoding))
+            }
             
         }else{
             print(error)
@@ -225,8 +249,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
     }
     
+    
+    func chunkToData(data:[NSData])->NSData{
+        var arrayData:[UInt16] = []
+        for i in data{
+            let count = i.length / sizeof(UInt16)
+            var dataArray = [UInt16](count: count, repeatedValue: 0)
+            i.getBytes(&dataArray, length:count * sizeof(UInt16))
+            arrayData.append(dataArray[0])
+        }
+        var d = NSData(bytes: arrayData, length: arrayData.count * sizeof(UInt16))
+        return d
+    }
+    
 
-
+    func reproducir(){
+        do{
+            try player = AVAudioPlayer(data: archivo)
+            player.prepareToPlay()
+            player.play()
+        }catch let error {
+            print("Error al convertir data a sonido \(error)")
+        }
+     
+    }
+    
 
 }
 
