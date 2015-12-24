@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Clientes-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Clientes" id="BYZ-38-t0r" customClass="ViewController" customModule="iBClient" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +16,70 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Vbq-Tx-anT">
+                                <rect key="frame" x="0.0" y="80" width="600" height="520"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="UqW-y7-9Vl">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UqW-y7-9Vl" id="VWv-X5-Tf4">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ANL-F1-0B9">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="80"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Peripherals" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vf7-An-59j">
+                                        <rect key="frame" x="242" y="24.5" width="116.5" height="31.5"/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="23"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="vf7-An-59j" firstAttribute="centerY" secondItem="ANL-F1-0B9" secondAttribute="centerY" id="GXn-vi-w6u"/>
+                                    <constraint firstAttribute="height" constant="80" id="KEv-Pa-eez"/>
+                                    <constraint firstItem="vf7-An-59j" firstAttribute="centerX" secondItem="ANL-F1-0B9" secondAttribute="centerX" id="Or0-qi-faL"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vbq-Tx-anT" firstAttribute="top" secondItem="ANL-F1-0B9" secondAttribute="bottom" id="9xy-E9-cQ7"/>
+                            <constraint firstItem="ANL-F1-0B9" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="AoU-V1-OoX"/>
+                            <constraint firstItem="Vbq-Tx-anT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ief-2B-xC9"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vbq-Tx-anT" secondAttribute="bottom" id="QOQ-eo-Ogd"/>
+                            <constraint firstItem="ANL-F1-0B9" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="UFC-i2-ReG"/>
+                            <constraint firstAttribute="trailing" secondItem="ANL-F1-0B9" secondAttribute="trailing" id="XM7-uT-MXy"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vbq-Tx-anT" secondAttribute="bottom" id="Y1a-Ug-2wQ"/>
+                            <constraint firstItem="Vbq-Tx-anT" firstAttribute="top" secondItem="ANL-F1-0B9" secondAttribute="bottom" id="aic-fY-iYG"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Vbq-Tx-anT" secondAttribute="trailing" constant="-20" id="gxs-qe-ezd"/>
+                            <constraint firstItem="Vbq-Tx-anT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="m6H-Ul-i5a"/>
+                            <constraint firstAttribute="trailing" secondItem="Vbq-Tx-anT" secondAttribute="trailing" id="n2C-2c-4ZA"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="aic-fY-iYG"/>
+                                <exclude reference="gxs-qe-ezd"/>
+                                <exclude reference="m6H-Ul-i5a"/>
+                                <exclude reference="Y1a-Ug-2wQ"/>
+                            </mask>
+                        </variation>
                     </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <outlet property="tb" destination="Vbq-Tx-anT" id="k7L-7N-fSc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="245" y="337"/>
         </scene>
     </scenes>
 </document>
